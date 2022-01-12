@@ -28,9 +28,9 @@ var certGenerator certs.CertGenerator = certs.CertGeneratorFunc(certs.CreateSign
 
 const (
 	// DefaultCertMinFresh is the default min-fresh value - 1 day
-	DefaultCertMinFresh = time.Hour * 24
+	DefaultCertMinFresh = time.Minute * 4
 	// DefaultCertValidFor is the default duration a cert can be valid for - 2 years
-	DefaultCertValidFor = time.Hour * 24 * 730
+	DefaultCertValidFor = time.Minute * 5
 	// OLMCAPEMKey is the CAPEM
 	OLMCAPEMKey = "olmCAKey"
 	// OLMCAHashAnnotationKey is the label key used to store the hash of the CA cert
@@ -191,7 +191,7 @@ func (i *StrategyDeploymentInstaller) installCertRequirements(strategy Strategy)
 		logger.Debug("failed to generate CA")
 		return nil, err
 	}
-	rotateAt := expiration.Add(-1 * DefaultCertMinFresh)
+	rotateAt := expiration.Add(DefaultCertMinFresh)
 
 	for n, sddSpec := range strategyDetailsDeployment.DeploymentSpecs {
 		certResources := i.certResourcesForDeployment(sddSpec.Name)
