@@ -1,0 +1,8 @@
+FROM registry.access.redhat.com/ubi8/python-36
+
+COPY scripts/requirements.txt .
+RUN pip install --requirement requirements.txt
+
+COPY Makefile .
+COPY scripts/sync.py scripts/
+COPY scripts/sync.sh scripts/

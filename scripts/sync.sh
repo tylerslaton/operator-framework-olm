@@ -10,11 +10,15 @@ source "${ROOT_DIR}/scripts/common.sh"
 
 SYNC_BRANCH_NAME="sync-$(printf '%(%Y-%m-%d)T\n' -1)"
 
+set +x
+export GITHUB_TOKEN=${GITHUB_TOKEN:=$(cat "$BOT_ACCESS_TOKEN")}
+set -x
+
 add_remote() {
     echo "Adding upstream remotes if they don't already exist"
     git config remote.api.url >&- || git remote add api https://github.com/operator-framework/api
-    git config remote.operator-registry.url >&- || git remote add api https://github.com/operator-framework/operator-registry
-    git config remote.operator-lifecycle-manager.url >&- || git remote add api https://github.com/operator-framework/operator-lifecycle-manager
+    git config remote.operator-registry.url >&- || git remote add operator-registry https://github.com/operator-framework/operator-registry
+    git config remote.operator-lifecycle-manager.url >&- || git remote add operator-lifecycle-manager https://github.com/operator-framework/operator-lifecycle-manager
     git config remote.upstream.url >&- || git remote add upstream https://github.com/openshift/operator-framework-olm
 }
 
@@ -59,12 +63,8 @@ check_local_branch_commit_diff() {
 }
 
 main() {
-    add_remote
-    fetch_remote
-    new_candidate_branch
     candidates
     pop
-    check_local_branch_commit_diff
 }
 
 main

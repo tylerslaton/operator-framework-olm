@@ -1,0 +1,2 @@
+PyGitHub >= 1.46
+GitPython
