@@ -45,6 +45,11 @@ candidates() {
 }
 
 pop() {
+    # TODO (tyslaton): We should add an if statement that checks if this needs to be set or do it in
+    #                  the python script.
+    git config --global user.name "OpenShift Merge Robot"
+    git config --global user.email "openshift-merge-robot@users.noreply.github.com"
+    
     echo "Applying all upstream commit candidates"
     for remote in "${UPSTREAM_REMOTES[@]}"; do
         "${ROOT_DIR}"/scripts/sync_pop_candidate.sh "$remote" -a

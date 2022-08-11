@@ -77,7 +77,11 @@ function pop() {
     make manifests
     git add "${subtree_dir}" "${ROOT_GENERATED_PATHS[@]}"
     git status
-    git commit --amend --allow-empty --no-edit --trailer "Upstream-repository: ${remote}" --trailer "Upstream-commit: ${rc}"
+
+    upstream_repository=$'\n\nUpstream-repository:'
+    upstream_commit=$'\nUpstream-commit:'
+    git commit --allow-empty --amend -m "$(git log --format=%B -n 1) $upstream_repository $remote"
+    git commit --allow-empty --amend -m "$(git log --format=%B -n 1) $upstream_commit $rc"
 
     tmp_set=$(mktemp)
     tail -n +2 "${cherrypick_set}" > "${tmp_set}"; cat "${tmp_set}" > "${cherrypick_set}"

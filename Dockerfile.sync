@@ -1,8 +1,16 @@
 FROM registry.access.redhat.com/ubi8/python-36
 
 COPY scripts/requirements.txt .
+COPY --from=golang:1.18 /usr/local/go /usr/local/go
+
+ENV PATH="/usr/local/go/bin:${PATH}"
+
 RUN pip install --requirement requirements.txt
 
+COPY scripts/sync.py scripts/sync.py
+COPY scripts/sync.sh scripts/sync.sh
+COPY scripts/common.sh scripts/common.sh
+COPY scripts/sync_get_candidates.sh scripts/sync_get_candidates.sh
+COPY scripts/sync_pop_candidate.sh scripts/sync_pop_candidate.sh
+
 COPY Makefile .
-COPY scripts/sync.py scripts/
-COPY scripts/sync.sh scripts/

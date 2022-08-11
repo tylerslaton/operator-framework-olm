@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: sync
+spec:
+  containers:
+  - name: sync
+    image: quay.io/tyslaton/sync
+    command: ["make"]
+    args: ["sync"]
+    env:
+      - name: GITHUB_TOKEN
+        value: <INSERT TOKEN HERE>
