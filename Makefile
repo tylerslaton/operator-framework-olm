@@ -186,9 +186,28 @@ crc: crc-start crc-build crc-deploy
 clean:
 	rm -rf bin
 
+# TODO: verify that the sync-container can run e2e
+SYNC_CLONE_REPO ?= "false"
+SYNC_SCRIPT_PATH ?= "./scripts/sync.sh"
+SYNC_OPTS ?= $(if $(SYNC_CLONE_REPO),--clone-repository=$(SYNC_CLONE_REPO)) $(if $(SYNC_SCRIPT_PATH),--script-path=$(SYNC_SCRIPT_PATH))
 .PHONY: sync
 sync:
-	./scripts/sync.sh
+	./scripts/sync.py $(SYNC_OPTS)
+
+.PHONY: sync-container
+sync-container:
+	docker build -f Dockerfile.sync . -t quay.io/operator-framework/olm-sync
+	docker run \
+		-t \
+		--rm \
+		-e GITHUB_TOKEN=$(GITHUB_TOKEN) \
+		--security-opt label=disable \
+		quay.io/operator-framework/olm-sync \
+		make sync SYNC_CLONE_REPO=true SYNC_SCRIPT_PATH=/opt/app-root/src/scripts/sync.sh
+
+# TODO: create a secret with access token + pod that mounts + exposes env vars; runs container with --clone-repository
+# -w /go/src/github.com/openshift/operator-framework-olm \
+# -v $(PWD):/go/src/github.com/openshift/operator-framework-olm \
 
 .PHONY: help
 help: ## Display this help.
